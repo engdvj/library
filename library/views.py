@@ -1,49 +1,41 @@
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
 from rest_framework import status
-from .models import Book
-from .serializers import BookSerializer
+from library.models import Book
+from library.serializers import BookSerializer
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
-@csrf_exempt
+@api_view(['GET', 'POST'])
 def book_list(request):
-    """View para listar todos os livros (GET) ou criar um novo livro (POST)."""
-    
     if request.method == 'GET':
         books = Book.objects.all()
         serializer = BookSerializer(books, many=True)
-        return JsonResponse(serializer.data, safe=False)
-    
+        return Response(serializer.data)
+
     elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = BookSerializer(data=data)
+        serializer = BookSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data, status=status.HTTP_201_CREATED)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@csrf_exempt
+@api_view(['GET', 'PUT', 'DELETE'])
 def book_detail(request, pk):
-    """View para obter, atualizar ou deletar um livro específico."""
-    
     try:
         book = Book.objects.get(pk=pk)
     except Book.DoesNotExist:
-        return JsonResponse({'error': 'Book not found'}, status=status.HTTP_404_NOT_FOUND)
+        return Response(status=status.HTTP_404_NOT_FOUND)
 
     if request.method == 'GET':
         serializer = BookSerializer(book)
-        return JsonResponse(serializer.data)
+        return Response(serializer.data)
 
     elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = BookSerializer(book, data=data)
+        serializer = BookSerializer(book, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.data)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     elif request.method == 'DELETE':
         book.delete()
-        return JsonResponse({'message': 'Book deleted successfully'}, status=status.HTTP_204_NO_CONTENT)
-
+        return Response(status=status.HTTP_204_NO_CONTENT)
