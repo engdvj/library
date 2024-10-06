@@ -1,11 +1,12 @@
-from django.urls import path
-from .views import BookList, BookDetail, AuthorList, AuthorDetail, CategoryList, CategoryDetail
+from django.urls import include, path
+from library import views
 
 urlpatterns = [
-    path('books/', BookList.as_view(), name='book-list'),
-    path('books/<int:pk>/', BookDetail.as_view(), name='book-detail'),
-    path('authors/', AuthorList.as_view(), name='author-list'),
-    path('authors/<int:pk>/', AuthorDetail.as_view(), name='author-detail'),
-    path('categories/', CategoryList.as_view(), name='category-list'),
-    path('categories/<int:pk>/', CategoryDetail.as_view(), name='category-detail'),
+    path('api/', views.ApiRoot.as_view(), name='api-root'),
+    path('api/books/', views.BookList.as_view(), name='book-list'),
+    path('api/books/<int:pk>/', views.BookDetail.as_view(), name='book-detail'),
+    path('api/authors/', views.AuthorList.as_view(), name='author-list'),
+    path('api/authors/<int:pk>/', views.AuthorDetail.as_view(), name='author-detail'),
+    path('api/categories/', views.CategoryList.as_view(), name='category-list'),
+    path('api/categories/<int:pk>/', views.CategoryDetail.as_view(), name='category-detail'),
 ]
