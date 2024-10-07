@@ -10,7 +10,7 @@ class AuthorSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Author
-        fields = ['id', 'name', 'birth_date', 'books']
+        fields = ['id', 'name', 'books']
 
 
 class CategorySerializer(serializers.ModelSerializer):
@@ -28,5 +28,4 @@ class CategorySerializer(serializers.ModelSerializer):
 class BookSerializer(serializers.ModelSerializer):
     class Meta:
         model = Book
-        fields = ['name', 'category', 'authors', 'publication_date', 'is_published']
-    
+        fields = ['name', 'category', 'author', 'publication_date', 'is_published']

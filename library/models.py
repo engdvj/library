@@ -12,9 +12,7 @@ class Category(models.Model):
 
 class Author(models.Model):
     name = models.CharField(max_length=255, unique=True)
-    birth_date = models.DateField(null=True, blank=True)  # Aceitar valores nulos
-    publication_date = models.DateTimeField(null=True, blank=True)  # Aceitar valores nulos
-
+    publication_date = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         ordering = ["name"]
@@ -25,8 +23,8 @@ class Author(models.Model):
 
 class Book(models.Model):
     name = models.CharField(max_length=250, unique=True)
+    author = models.ForeignKey(Author, related_name="books", on_delete=models.CASCADE)  # Verifique se o nome do campo é 'author'
     category = models.ForeignKey(Category, related_name="books", on_delete=models.CASCADE)
-    authors = models.ManyToManyField(Author, related_name='books')  # Relacionamento muitos para muitos
     publication_date = models.DateTimeField()
     is_published = models.BooleanField(default=False)
 

@@ -28,8 +28,6 @@ DEBUG = True
 ALLOWED_HOSTS = []
 
 
-# Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -37,10 +35,19 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
+    # Django REST Framework
+    'rest_framework',  
+    # App principal da biblioteca
+    'library',
     
-    'rest_framework',  # Django REST Framework
-    'library.apps.LibraryConfig',  # Aplicativo da biblioteca
+    # App renomeado "library_management" como o core
+    'library_management',
+
+    # Outros apps
+    "django_filters",
 ]
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -112,7 +119,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 
 # Static files (CSS, JavaScript, Images)
@@ -132,6 +139,12 @@ REST_FRAMEWORK = {
         'rest_framework.renderers.JSONRenderer',
         'rest_framework.renderers.BrowsableAPIRenderer',
     ],
-    "DEFAULT_PAGINATION_CLASS": "library.pagination.LimitOffsetPaginationWithUpperBound",
-    "PAGE_SIZE": 4,
+    "DEFAULT_PAGINATION_CLASS": "library.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 5,
+    
+    "DEFAULT_FILTER_BACKENDS": (
+        "django_filters.rest_framework.DjangoFilterBackend",
+        "rest_framework.filters.OrderingFilter",
+        "rest_framework.filters.SearchFilter",
+    ),
 }
